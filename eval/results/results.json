@@ -1,0 +1,137 @@
+{
+  "extractor" : "rule-based (offline)",
+  "synthetic" : {
+    "name" : "synthetic",
+    "meetings" : 200,
+    "overall" : {
+      "tp" : 993,
+      "predicted" : 993,
+      "gold" : 1010,
+      "precision" : 1.0,
+      "recall" : 0.983,
+      "f1" : 0.992
+    },
+    "explicit" : {
+      "tp" : 704,
+      "predicted" : 704,
+      "gold" : 721,
+      "precision" : 1.0,
+      "recall" : 0.976,
+      "f1" : 0.988
+    },
+    "implicit" : {
+      "tp" : 289,
+      "predicted" : 289,
+      "gold" : 289,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "f1" : 1.0
+    },
+    "decisions" : {
+      "tp" : 130,
+      "predicted" : 130,
+      "gold" : 130,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "f1" : 1.0
+    },
+    "typeConfusions" : 0,
+    "deadlineAccuracy" : 1.0,
+    "hallucinationRate" : 0.0,
+    "routedToReview" : 0.291,
+    "autoAcceptPrecision" : 1.0,
+    "errors" : [ "FN lines [7] [Marcus, EXPLICIT] share the budget numbers with finance (Synthetic meeting 6)", "FN lines [4] [Tom, EXPLICIT] share the budget numbers with finance (Synthetic meeting 9)", "FN lines [15] [Priya, EXPLICIT] share the budget numbers with finance (Synthetic meeting 15)", "FN lines [13] [Omar, EXPLICIT] share the budget numbers with finance (Synthetic meeting 18)", "FN lines [14] [Tom, EXPLICIT] share the budget numbers with finance (Synthetic meeting 31)", "FN lines [11] [Priya, EXPLICIT] share the budget numbers with finance (Synthetic meeting 41)", "FN lines [8] [Priya, EXPLICIT] share the budget numbers with finance (Synthetic meeting 50)", "FN lines [11] [Priya, EXPLICIT] share the budget numbers with finance (Synthetic meeting 65)", "FN lines [6] [Elena, EXPLICIT] share the budget numbers with finance (Synthetic meeting 71)", "FN lines [9] [Priya, EXPLICIT] share the budget numbers with finance (Synthetic meeting 88)", "FN lines [11] [Tom, EXPLICIT] share the budget numbers with finance (Synthetic meeting 91)", "FN lines [9] [Sai, EXPLICIT] share the budget numbers with finance (Synthetic meeting 94)", "FN lines [9] [Fatima, EXPLICIT] share the budget numbers with finance (Synthetic meeting 123)", "FN lines [18] [Priya, EXPLICIT] share the budget numbers with finance (Synthetic meeting 126)", "FN lines [3] [Fatima, EXPLICIT] share the budget numbers with finance (Synthetic meeting 142)", "FN lines [11] [Aisha, EXPLICIT] share the budget numbers with finance (Synthetic meeting 147)" ]
+  },
+  "devSet" : {
+    "name" : "hand-written dev set",
+    "meetings" : 3,
+    "overall" : {
+      "tp" : 17,
+      "predicted" : 17,
+      "gold" : 17,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "f1" : 1.0
+    },
+    "explicit" : {
+      "tp" : 12,
+      "predicted" : 12,
+      "gold" : 12,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "f1" : 1.0
+    },
+    "implicit" : {
+      "tp" : 5,
+      "predicted" : 5,
+      "gold" : 5,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "f1" : 1.0
+    },
+    "decisions" : {
+      "tp" : 4,
+      "predicted" : 4,
+      "gold" : 4,
+      "precision" : 1.0,
+      "recall" : 1.0,
+      "f1" : 1.0
+    },
+    "typeConfusions" : 0,
+    "deadlineAccuracy" : 1.0,
+    "hallucinationRate" : 0.0,
+    "routedToReview" : 0.294,
+    "autoAcceptPrecision" : 1.0,
+    "errors" : [ ]
+  },
+  "blindSet" : {
+    "name" : "**blind set** (held out)",
+    "meetings" : 3,
+    "overall" : {
+      "tp" : 12,
+      "predicted" : 12,
+      "gold" : 15,
+      "precision" : 1.0,
+      "recall" : 0.8,
+      "f1" : 0.889
+    },
+    "explicit" : {
+      "tp" : 8,
+      "predicted" : 8,
+      "gold" : 12,
+      "precision" : 1.0,
+      "recall" : 0.667,
+      "f1" : 0.8
+    },
+    "implicit" : {
+      "tp" : 3,
+      "predicted" : 4,
+      "gold" : 3,
+      "precision" : 0.75,
+      "recall" : 1.0,
+      "f1" : 0.857
+    },
+    "decisions" : {
+      "tp" : 1,
+      "predicted" : 1,
+      "gold" : 2,
+      "precision" : 1.0,
+      "recall" : 0.5,
+      "f1" : 0.667
+    },
+    "typeConfusions" : 1,
+    "deadlineAccuracy" : 0.857,
+    "hallucinationRate" : 0.0,
+    "routedToReview" : 0.333,
+    "autoAcceptPrecision" : 1.0,
+    "errors" : [ "FN lines [6] [Grace, EXPLICIT] app store screenshots (Mobile release huddle)", "FN lines [7, 8] [Omar, EXPLICIT] double check the deep link (Mobile release huddle)", "FN lines [12] [Rui, EXPLICIT] send the icon exports (Design review: settings page)" ]
+  },
+  "verifier" : {
+    "fabricated" : 200,
+    "caught" : 1.0,
+    "exactQuotes" : 3626,
+    "falseRejects" : 0.0,
+    "paraphrases" : 2263,
+    "paraphraseFlagged" : 1.0
+  }
+}

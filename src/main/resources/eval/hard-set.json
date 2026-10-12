@@ -1,0 +1,221 @@
+{
+ "note": "Hand-written, hand-labeled transcripts written before the extractor existed, but the extractor's rules were then designed while reading them, so this is a development set, not a held-out one. See blind-set.json for held-out numbers.",
+ "meetings": [
+  {
+   "title": "Checkout reliability sync",
+   "date": "2026-10-05",
+   "series": "platform",
+   "transcript": "Priya: Okay, let's get started. Can everyone hear me?\nMarcus: Yep.\nPriya: So first thing, the checkout latency spike from Thursday. Jun, where are we?\nJun: Um, so we traced it to the connection pool on the payments service. I already bumped the pool size on Friday, so it's stable for now.\nPriya: Great. Do we need a proper fix?\nJun: Yeah. I'll write up the postmortem by Wednesday and I'll add an alert on pool saturation.\nMarcus: I can take a look at why the pool was exhausted in the first place, I have a hunch it's the retry storm.\nPriya: Please do. Elena, could you add a regression test for the timeout path before the release?\nElena: Sure, I'll have it in by Thursday.\nPriya: Perfect. Second topic, the release date. We talked about pushing to the 14th.\nMarcus: Honestly I think we should just go with the 14th, the migration isn't done.\nPriya: Okay, decision: we ship on October 14th instead of the 9th.\nElena: That works for QA.\nMarcus: I'm blocked on the schema migration until the DBA team approves the change window.\nPriya: I'll ping the DBA lead today.\nJun: Oh and someone should probably update the on-call runbook at some point.\nPriya: Yeah. Let's not lose that. Marcus, can you own the runbook update?\nMarcus: Hmm, not this week, I'm buried in the migration. Maybe next sprint.\nElena: I can do it if nobody else has time.\nPriya: Thanks Elena. Anything else? No? Great, thanks all.",
+   "actions": [
+    {
+     "owner": "Jun",
+     "type": "EXPLICIT",
+     "lines": [
+      6
+     ],
+     "deadline": "2026-10-07",
+     "action": "write up the postmortem"
+    },
+    {
+     "owner": "Jun",
+     "type": "EXPLICIT",
+     "lines": [
+      6
+     ],
+     "deadline": null,
+     "action": "add an alert on pool saturation"
+    },
+    {
+     "owner": "Marcus",
+     "type": "IMPLICIT",
+     "lines": [
+      7
+     ],
+     "deadline": null,
+     "action": "look at why the pool was exhausted"
+    },
+    {
+     "owner": "Elena",
+     "type": "EXPLICIT",
+     "lines": [
+      8,
+      9
+     ],
+     "deadline": "2026-10-08",
+     "action": "add a regression test for the timeout path"
+    },
+    {
+     "owner": "Priya",
+     "type": "EXPLICIT",
+     "lines": [
+      15
+     ],
+     "deadline": "2026-10-05",
+     "action": "ping the DBA lead"
+    },
+    {
+     "owner": "Elena",
+     "type": "IMPLICIT",
+     "lines": [
+      17,
+      19
+     ],
+     "deadline": null,
+     "action": "update the on-call runbook"
+    }
+   ],
+   "decisions": [
+    [
+     12
+    ]
+   ],
+   "blockers": [
+    [
+     14
+    ]
+   ]
+  },
+  {
+   "title": "Q4 planning - growth",
+   "date": "2026-10-07",
+   "series": "growth",
+   "transcript": "Fatima: Thanks for joining. Goal today is to lock the Q4 bets.\nAisha: Before we start, I pulled the funnel numbers. Activation dropped about 4% after the onboarding change.\nFatima: Hm, that's not great. Can you break it down by platform? Ideally before Friday's review.\nAisha: Yeah, can do.\nTom: I suspect it's the new permissions screen on Android. I'll dig into the session recordings when I get a chance.\nSai: From the eng side, the permissions screen is easy to revert if we need to.\nFatima: Let's not revert yet. We agreed we'd wait for Aisha's breakdown first.\nFatima: Okay, Q4 bets. I'm proposing three: referral program, faster checkout, and the Android redesign.\nTom: The redesign is huge. I don't think we can do it this quarter.\nSai: Agreed, it's at least two quarters of eng work.\nFatima: Fine, we're going with referrals and checkout for Q4, redesign moves to Q1.\nFatima: Sai, I need a rough estimate for the referral program by next Tuesday.\nSai: Sure. I'll pair with Tom on it.\nTom: I'll put together some referral flow mocks for Sai by Monday.\nAisha: I won't be able to support the referral analytics until November, just flagging.\nFatima: Noted. We're waiting on legal to sign off on the referral terms anyway.\nFatima: I'll chase legal tomorrow.\nSai: Maybe I should also look at the checkout payment SDK upgrade, it's been on my list forever.\nFatima: Please. Okay that's time, thanks everyone.",
+   "actions": [
+    {
+     "owner": "Aisha",
+     "type": "EXPLICIT",
+     "lines": [
+      3,
+      4
+     ],
+     "deadline": "2026-10-09",
+     "action": "break down activation by platform"
+    },
+    {
+     "owner": "Tom",
+     "type": "IMPLICIT",
+     "lines": [
+      5
+     ],
+     "deadline": null,
+     "action": "dig into the session recordings"
+    },
+    {
+     "owner": "Sai",
+     "type": "EXPLICIT",
+     "lines": [
+      12,
+      13
+     ],
+     "deadline": "2026-10-13",
+     "action": "rough estimate for the referral program"
+    },
+    {
+     "owner": "Tom",
+     "type": "EXPLICIT",
+     "lines": [
+      14
+     ],
+     "deadline": "2026-10-12",
+     "action": "put together referral flow mocks"
+    },
+    {
+     "owner": "Fatima",
+     "type": "EXPLICIT",
+     "lines": [
+      17
+     ],
+     "deadline": "2026-10-08",
+     "action": "chase legal"
+    },
+    {
+     "owner": "Sai",
+     "type": "IMPLICIT",
+     "lines": [
+      18
+     ],
+     "deadline": null,
+     "action": "look at the checkout payment SDK upgrade"
+    }
+   ],
+   "decisions": [
+    [
+     7
+    ],
+    [
+     11
+    ]
+   ],
+   "blockers": [
+    [
+     16
+    ]
+   ]
+  },
+  {
+   "title": "Platform weekly",
+   "date": "2026-10-09",
+   "series": "platform",
+   "transcript": "Priya: Quick one today. Status on last week's items?\nJun: Postmortem is published, I sent it out yesterday. The pool saturation alert is still on my list.\nElena: Regression test for the timeout path is merged.\nMarcus: Still blocked on the DBA approval, honestly.\nPriya: Ugh. I'll escalate it to their director today.\nJun: I'll get the alert done by end of week, promise.\nMarcus: Also, I looked at the retry storm thing. It's the client SDK retrying without backoff.\nPriya: Can we fix that on our side?\nMarcus: Partially. I could add a server-side rate limit, but the real fix is in the SDK.\nPriya: Okay. Let's do both. Marcus, you own the rate limit, and Elena, can you file a ticket with the SDK team?\nElena: Will do, I'll file it this afternoon.\nMarcus: Fine, rate limit by next Friday.\nJun: Should we also tell support about the SDK issue?\nPriya: Good call. Let me think about who should own comms.\nPriya: Decision for the record: no client SDK changes until the vendor responds.\nJun: Got it. That's it from me.",
+   "actions": [
+    {
+     "owner": "Priya",
+     "type": "EXPLICIT",
+     "lines": [
+      5
+     ],
+     "deadline": "2026-10-09",
+     "action": "escalate DBA approval to their director"
+    },
+    {
+     "owner": "Jun",
+     "type": "EXPLICIT",
+     "lines": [
+      6
+     ],
+     "deadline": "2026-10-09",
+     "action": "get the alert done"
+    },
+    {
+     "owner": "Marcus",
+     "type": "EXPLICIT",
+     "lines": [
+      10,
+      12
+     ],
+     "deadline": "2026-10-16",
+     "action": "own the server-side rate limit"
+    },
+    {
+     "owner": "Elena",
+     "type": "EXPLICIT",
+     "lines": [
+      10,
+      11
+     ],
+     "deadline": "2026-10-09",
+     "action": "file a ticket with the SDK team"
+    },
+    {
+     "owner": "Priya",
+     "type": "IMPLICIT",
+     "lines": [
+      14
+     ],
+     "deadline": null,
+     "action": "figure out who should own comms"
+    }
+   ],
+   "decisions": [
+    [
+     15
+    ]
+   ],
+   "blockers": [
+    [
+     4
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ActionGraph</title>
+<style>
+  :root { --bg:#f7f6f2; --panel:#fff; --ink:#1d1c1a; --muted:#6c6a63; --line:#e4e2da; --accent:#5b4bb0; --ok:#2e7d4f; --warn:#a1620a; --bad:#a33a2f; --hl:#fff2c4; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151514; --panel:#1f1e1c; --ink:#edebe4; --muted:#a3a198; --line:#34332e; --accent:#ada2f0; --ok:#6cc495; --warn:#e6ab55; --bad:#ec8a7e; --hl:#4a3f12; } }
+  * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; }
+  main { max-width:1180px; margin:0 auto; padding:20px 16px 60px; }
+  header { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  h1 { font-size:20px; margin:0; } h2 { font-size:15px; margin:0 0 10px; } .muted { color:var(--muted); }
+  nav button { background:transparent; border:1px solid var(--line); color:var(--ink); border-radius:99px; padding:6px 12px; cursor:pointer; font:inherit; }
+  nav button.on { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin:16px 0; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; } .kpi b { font-size:22px; display:block; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-top:14px; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap:14px; } @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
+  table { width:100%; border-collapse:collapse; } th, td { text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); vertical-align:top; font-size:13px; }
+  .pill { font-size:11px; padding:1px 7px; border-radius:99px; border:1px solid var(--line); white-space:nowrap; }
+  .EXPLICIT { color:var(--accent); } .IMPLICIT { color:var(--warn); } .DONE { color:var(--ok); } .REJECTED { color:var(--bad); } .overdue { color:var(--bad); font-weight:600; }
+  .utt { padding:3px 6px; border-radius:6px; font-size:13px; } .utt.hl { background:var(--hl); } .utt .n { color:var(--muted); display:inline-block; width:28px; }
+  q { font-style:italic; color:var(--muted); } q::before, q::after { content:'"'; }
+  input, textarea, button.act { font:inherit; color:var(--ink); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:7px 9px; }
+  textarea { width:100%; min-height:220px; font-family:ui-monospace,Menlo,monospace; font-size:12px; }
+  button.act { background:var(--accent); color:#fff; border:0; cursor:pointer; } button.act.bad { background:var(--bad); }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; } .scroll { overflow-x:auto; } .link { cursor:pointer; color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>ActionGraph</h1>
+    <nav id="tabs"><button data-t="overview" class="on">Overview</button> <button data-t="review">Review queue</button> <button data-t="meetings">Meetings</button> <button data-t="add">Add meeting</button></nav>
+    <label class="muted">as of <input type="date" id="asof"></label>
+  </header>
+  <div id="view"></div>
+</main>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const api = async (p, o) => { const r = await fetch(p, o); const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); return j; };
+const asof = document.getElementById('asof'); asof.value = new Date().toISOString().slice(0, 10);
+let tab = 'overview';
+const itemRow = (i, actions) => {
+  const overdue = i.deadline && i.deadline < asof.value && (i.status === 'OPEN' || i.status === 'NEEDS_REVIEW');
+  return `<tr><td><b>${esc(i.owner)}</b></td><td>${esc(i.action)}<br><q>${esc(i.evidence)}</q> <span class="muted">L${i.evidenceLine} · ${i.meetingId}</span>
+    ${i.reviewReasons.length ? `<br><span class="muted">${esc(i.reviewReasons.join('; '))}</span>` : ''}</td>
+    <td class="${overdue ? 'overdue' : ''}">${esc(i.deadline || '–')}${overdue ? ' overdue' : ''}</td>
+    <td><span class="pill ${i.type}">${i.type}</span> <span class="muted">${i.confidence.toFixed(2)}</span></td>
+    <td><span class="pill ${i.status}">${i.status}</span></td>${actions ? `<td class="row">${actions(i)}</td>` : ''}</tr>`;
+};
+const table = (rows, extra) => `<div class="scroll"><table><tr><th>Owner</th><th>Action · evidence</th><th>Due</th><th>Type</th><th>Status</th>${extra ? '<th></th>' : ''}</tr>${rows || '<tr><td colspan="6" class="muted">Nothing here</td></tr>'}</table></div>`;
+
+async function overview() {
+  const d = await api('/api/dashboard?asOf=' + asof.value);
+  const overdue = await api(`/api/items?overdue=true&asOf=${asof.value}`);
+  const open = await api(`/api/items?status=OPEN&asOf=${asof.value}`);
+  return `<div class="kpis"><div class="kpi"><b>${d.meetings}</b>meetings</div><div class="kpi"><b>${d.openItems}</b>open items</div>
+    <div class="kpi"><b>${d.needsReview}</b>need review</div><div class="kpi"><b class="overdue">${d.overdue}</b>overdue</div>
+    <div class="kpi"><b>${d.done}</b>done</div><div class="kpi"><b>${d.decisions}</b>decisions</div></div>
+    <div class="grid"><div class="card"><h2>Overdue</h2>${table(overdue.map(i => itemRow(i)).join(''))}</div>
+    <div class="card"><h2>Open by owner</h2>${Object.entries(d.openByOwner).map(([o, n]) => `<div class="row"><b style="width:90px">${esc(o)}</b><span style="display:inline-block;height:10px;width:${n * 22}px;background:var(--accent);border-radius:4px"></span> ${n}</div>`).join('')}
+    <p class="muted">Extractor: ${esc(d.extractor)}</p></div></div>
+    <div class="card"><h2>Open action items</h2>${table(open.map(i => itemRow(i)).join(''))}</div>`;
+}
+async function review() {
+  const q = await api(`/api/items?status=NEEDS_REVIEW&asOf=${asof.value}`);
+  return `<div class="card"><h2>Needs review (${q.length})</h2><p class="muted">Soft commitments, low confidence, paraphrased evidence or unknown owners. Approve to make them real action items.</p>
+    ${table(q.map(i => itemRow(i, x => `<button class="act" onclick="rv('${x.id}',true)">Approve</button><button class="act bad" onclick="rv('${x.id}',false)">Reject</button>`)).join(''), true)}</div>`;
+}
+window.rv = async (id, approve) => { await api(`/api/items/${id}/review`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ approve }) }); render(); };
+async function meetings() {
+  const ms = await api('/api/meetings');
+  return ms.map(m => `<div class="card"><h2 class="link" onclick="openMeeting('${m.id}')">${esc(m.title)} <span class="muted">· ${m.date} · ${esc(m.series)}</span></h2>
+    <span class="muted">${m.itemIds.length} items · ${m.decisions.length} decisions · ${m.blockers.length} blockers · ${m.completed.length} earlier items closed · ${m.carriedOver.length} carried over · ${m.rejected.length} rejected as unsupported</span></div>`).join('');
+}
+window.openMeeting = async id => {
+  const m = await api('/api/meetings/' + id);
+  const items = (await api(`/api/items?asOf=${asof.value}`)).filter(i => i.meetingId === id);
+  const lines = new Set([...items.map(i => i.evidenceLine), ...m.decisions.map(d => d.evidenceLine), ...m.blockers.map(b => b.evidenceLine)]);
+  document.getElementById('view').innerHTML = `<div class="card"><h2>${esc(m.title)} <span class="muted">· ${m.date}</span></h2>
+    <div class="grid"><div>${m.utterances.map(u => `<div class="utt ${lines.has(u.line) ? 'hl' : ''}"><span class="n">${u.line}</span><b>${esc(u.speaker)}:</b> ${esc(u.text)}</div>`).join('')}</div>
+    <div><h2>Decisions</h2>${m.decisions.map(d => `<div>L${d.evidenceLine}: ${esc(d.text)}</div>`).join('') || '<span class="muted">none</span>'}
+    <h2 style="margin-top:12px">Blockers</h2>${m.blockers.map(b => `<div>L${b.evidenceLine} (${esc(b.owner)}): ${esc(b.text)}</div>`).join('') || '<span class="muted">none</span>'}
+    <h2 style="margin-top:12px">Closed from earlier meetings</h2>${m.completed.map(c => `<div>${c.itemId}: <q>${esc(c.evidence)}</q></div>`).join('') || '<span class="muted">none</span>'}</div></div>
+    <h2 style="margin-top:14px">Action items</h2>${table(items.map(i => itemRow(i)).join(''))}</div>`;
+};
+function add() {
+  return `<div class="card"><h2>Add a meeting transcript</h2><div class="row"><input id="ti" placeholder="Title" value="Team sync"> <input id="da" type="date" value="${asof.value}"> <input id="se" placeholder="Series (for carry-over)" value="platform"></div>
+    <p class="muted">One turn per line: <code>Name: text</code>, <code>[00:12:31] Name: text</code> or <code>Name - text</code>.</p>
+    <textarea id="tx">Priya: Quick sync. Jun, did the pool saturation alert ship?
+Jun: Yes, it's done and merged.
+Priya: Great. Marcus, can you send the rate limit design doc by Thursday?
+Marcus: Sure, will do.
+Elena: I'll take a look at the flaky test when I get a chance.</textarea>
+    <div class="row" style="margin-top:8px"><button class="act" id="go">Extract</button> <span id="msg" class="muted"></span></div></div>`;
+}
+async function render() {
+  const v = document.getElementById('view');
+  try { v.innerHTML = tab === 'overview' ? await overview() : tab === 'review' ? await review() : tab === 'meetings' ? await meetings() : add(); }
+  catch (e) { v.innerHTML = `<div class="card">${esc(e.message)}</div>`; }
+  if (tab === 'add') document.getElementById('go').onclick = async () => {
+    try { const m = await api('/api/meetings', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({
+        title: ti.value, date: da.value, series: se.value, transcript: tx.value }) });
+      openMeeting(m.id); } catch (e) { msg.textContent = e.message; } };
+}
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => { tab = b.dataset.t;
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b)); render(); });
+asof.onchange = render;
+render();
+</script>
+</body>
+</html>

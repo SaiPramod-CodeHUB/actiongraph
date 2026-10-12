@@ -1,0 +1,30 @@
+server:
+  port: ${PORT:8080}
+
+actiongraph:
+  seed-demo: true      # load the three example meetings on startup
+
+spring:
+  application:
+    name: actiongraph
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  ai:
+    model:
+      chat: ${LLM_PROVIDER:none}     # "anthropic" = Claude structured-output extractor; "none" = offline rules
+      embedding: none
+    anthropic:
+      api-key: ${ANTHROPIC_API_KEY:not-set}
+      chat:
+        options:
+          model: ${ANTHROPIC_MODEL:claude-sonnet-5-5}
+          max-tokens: 4000
+          temperature: 0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

@@ -1,0 +1,189 @@
+{
+ "note": "BLIND set: written and labeled after the extractor was finished, in different styles (timestamps, 'Name - text', continuation lines, slang). Run once; the extractor was not changed after seeing these results.",
+ "meetings": [
+  {
+   "title": "Mobile release huddle",
+   "date": "2026-10-12",
+   "series": "mobile",
+   "transcript": "[00:00:04] Lena: ok we're recording. quick huddle on 4.2\n[00:00:10] Omar: hey. so the crash on login is still at like 2% on android\n[00:00:21] Lena: yikes. who's got that?\n[00:00:25] Omar: that's on me, I'm gonna ship a hotfix wednesday\n[00:00:40] Lena: perfect. and the app store screenshots?\n[00:00:44] Grace: I've got the screenshots, leave it with me. should be done by thursday\n[00:01:02] Lena: thanks grace. Omar can you also double check the deep link thing before we submit\n[00:01:09] Omar: yeah no problem\n[00:01:15] Lena: cool. also we decided last week to drop iPad support for this release, just confirming that's still the plan\n[00:01:24] Grace: yep still the plan\n[00:01:30] Omar: one thing, I'm waiting for the backend team to bump the API version, can't really test the new onboarding until then\n[00:01:41] Lena: ugh ok. I'll nudge Dev on the backend team after this.\n[00:01:50] Grace: I might poke at the onboarding copy in the meantime\n[00:01:58] Lena: sure. ok thats it, thanks",
+   "actions": [
+    {
+     "owner": "Omar",
+     "type": "EXPLICIT",
+     "lines": [
+      4
+     ],
+     "deadline": "2026-10-14",
+     "action": "ship the login crash hotfix"
+    },
+    {
+     "owner": "Grace",
+     "type": "EXPLICIT",
+     "lines": [
+      6
+     ],
+     "deadline": "2026-10-15",
+     "action": "app store screenshots"
+    },
+    {
+     "owner": "Omar",
+     "type": "EXPLICIT",
+     "lines": [
+      7,
+      8
+     ],
+     "deadline": null,
+     "action": "double check the deep link"
+    },
+    {
+     "owner": "Lena",
+     "type": "EXPLICIT",
+     "lines": [
+      12
+     ],
+     "deadline": null,
+     "action": "nudge Dev on the backend team"
+    },
+    {
+     "owner": "Grace",
+     "type": "IMPLICIT",
+     "lines": [
+      13
+     ],
+     "deadline": null,
+     "action": "poke at the onboarding copy"
+    }
+   ],
+   "decisions": [
+    [
+     9
+    ]
+   ],
+   "blockers": [
+    [
+     11
+    ]
+   ]
+  },
+  {
+   "title": "Design review: settings page",
+   "date": "2026-10-13",
+   "series": "design",
+   "transcript": "Hana - Thanks for coming. We have 30 minutes.\nVictor - I walked through the new settings layout with three customers yesterday.\nVictor - Two of them couldn't find the notification toggles.\nHana - Hmm. Okay so the toggles need to move up.\nRui - I can mock up a version with the toggles at the top, probably by tomorrow.\nHana - Great. Victor, would you be able to run two more sessions with the new mock next week?\nVictor - Should be fine. I'll book them for Tuesday.\nRui - Also, re the dark mode bug, Marcus said he'd look at it.\nHana - Let's keep dark mode out of scope for this sprint.\nVictor - Agreed.\nHana - I'll write up the decision in the design doc and send it around today.\nRui - Oh, and I still owe you the icon exports from last week, I'll get those over tonight.\nHana - Thanks. Okay, done early.",
+   "actions": [
+    {
+     "owner": "Rui",
+     "type": "IMPLICIT",
+     "lines": [
+      5
+     ],
+     "deadline": "2026-10-14",
+     "action": "mock up toggles-at-top version"
+    },
+    {
+     "owner": "Victor",
+     "type": "EXPLICIT",
+     "lines": [
+      6,
+      7
+     ],
+     "deadline": "2026-10-20",
+     "action": "run two more user sessions"
+    },
+    {
+     "owner": "Hana",
+     "type": "EXPLICIT",
+     "lines": [
+      11
+     ],
+     "deadline": "2026-10-13",
+     "action": "write up the decision in the design doc"
+    },
+    {
+     "owner": "Rui",
+     "type": "EXPLICIT",
+     "lines": [
+      12
+     ],
+     "deadline": "2026-10-13",
+     "action": "send the icon exports"
+    }
+   ],
+   "decisions": [
+    [
+     9
+    ]
+   ],
+   "blockers": []
+  },
+  {
+   "title": "Incident review - payments outage",
+   "date": "2026-10-14",
+   "series": "incidents",
+   "transcript": "Dev: Thanks everyone. Timeline first. Alerts fired at 14:02, we declared at 14:10, mitigated at 14:47.\nInes: The root cause was the expired TLS cert on the payment gateway proxy.\nNobody got the renewal email because it went to a distribution list that was deleted.\nDev: Right. So action items. First, cert expiry monitoring.\nInes: Put me down for that. I'll have an alert for any cert expiring within 30 days by end of next week.\nDev: Thanks Ines. Second, we need an owner for the distribution list cleanup.\nKofi: I can take that, but it might slip past Friday because of the audit.\nDev: That's fine. Third, the runbook didn't mention the proxy at all.\nInes: Yeah, I'll update the runbook too.\nKofi: Should we also look at moving to managed certificates?\nDev: Let's not decide that today. Kofi, can you write up the pros and cons for next Wednesday's review?\nKofi: Sure.\nDev: And I'll send the postmortem draft to the exec team by Friday.\nInes: One more thing, we're blocked on getting access to the CA dashboard, security still hasn't granted it.\nDev: I'll chase security. Okay, thanks all.",
+   "actions": [
+    {
+     "owner": "Ines",
+     "type": "EXPLICIT",
+     "lines": [
+      4
+     ],
+     "deadline": "2026-10-23",
+     "action": "cert expiry alert"
+    },
+    {
+     "owner": "Kofi",
+     "type": "IMPLICIT",
+     "lines": [
+      6
+     ],
+     "deadline": null,
+     "action": "distribution list cleanup"
+    },
+    {
+     "owner": "Ines",
+     "type": "EXPLICIT",
+     "lines": [
+      8
+     ],
+     "deadline": null,
+     "action": "update the runbook"
+    },
+    {
+     "owner": "Kofi",
+     "type": "EXPLICIT",
+     "lines": [
+      10,
+      11
+     ],
+     "deadline": "2026-10-21",
+     "action": "write up pros and cons of managed certificates"
+    },
+    {
+     "owner": "Dev",
+     "type": "EXPLICIT",
+     "lines": [
+      12
+     ],
+     "deadline": "2026-10-16",
+     "action": "send the postmortem draft to execs"
+    },
+    {
+     "owner": "Dev",
+     "type": "EXPLICIT",
+     "lines": [
+      14
+     ],
+     "deadline": null,
+     "action": "chase security for CA dashboard access"
+    }
+   ],
+   "decisions": [],
+   "blockers": [
+    [
+     13
+    ]
+   ]
+  }
+ ]
+}
